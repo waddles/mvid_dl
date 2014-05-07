@@ -12,19 +12,19 @@ Scrapes the [Australian Top 50 singles chart](http://ariacharts.com.au/chart/sin
 ## Installation
 - Install youtube-dl according to that project's instructions or your distro's instructions.
 - Clone the repo from github
- ```
- $ git clone https://github.com/waddles/mvid_dl mvid_dl
- ```
+```
+$ git clone https://github.com/waddles/mvid_dl mvid_dl
+```
 - Optionally create a [virtualenv](https://pypi.python.org/pypi/virtualenv)
- ```
- $ virtualenv --python=python2.7 --verbose mvid_dl
- $ cd mvid_dl
- $ . bin/activate
- ```
+```
+$ virtualenv --python=python2.7 --verbose mvid_dl
+$ cd mvid_dl
+$ . bin/activate
+```
 - Install required python (2.7) packages
- ```
- $ pip install -r requires.txt 
- ```
+```
+$ pip install -r requires.txt 
+```
 
 ## Usage
 Currently, it only outputs the url and file name which needs to be passed as follows:
