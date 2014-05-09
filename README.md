@@ -7,7 +7,9 @@ Scrapes the [Australian Top 50 singles chart](http://ariacharts.com.au/chart/sin
 
 ## Planned features:
 - flexible configuration of other song chart sources
+- ini file for persistent settings
 - command line switches to accept artist and/or song titles on command line or standard input
+- (eventually) download all songs in XBMC's music collection
 
 ## Installation
 - Install youtube-dl according to that project's instructions or your distro's instructions.

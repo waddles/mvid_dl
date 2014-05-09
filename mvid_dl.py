@@ -12,6 +12,9 @@ from __future__ import print_function
 import json, re, requests, sys, time
 from lxml import html
 
+# FIXME Change this to a valid api key
+apikey = 1
+
 page = requests.get('http://ariacharts.com.au/chart/singles')
 tree = html.fromstring(page.text)
 songs = tree.xpath('//div[@class="column col-6"]/h3/text()')
@@ -20,8 +23,7 @@ artists = tree.xpath('//div[@class="column col-6"]/p[1]/text()[1]')
 #for line in sys.stdin:
 #    line = line.rstrip()
 #    payload = {'s': line}
-for i,title in enumerate(songs):
-    artist = artists[i]
+for (artist,title) in zip(artists,songs):
     artist = re.sub(r' Feat\..*', r'', artist, flags=2)
     artist = re.sub(r' Vs.*', r'', artist, flags=2)
     artist = re.sub(r' &.*', r'', artist, flags=2)
@@ -29,7 +31,7 @@ for i,title in enumerate(songs):
     artist = artist.rstrip()
 
     payload = {'s': artist}
-    r = requests.get('http://www.theaudiodb.com/api/v1/json/1/search.php', params=payload)
+    r = requests.get('http://www.theaudiodb.com/api/v1/json/{0}/search.php'.format(apikey), params=payload)
     
     data = json.loads(r.text)
     
@@ -48,7 +50,7 @@ for i,title in enumerate(songs):
  
         time.sleep(2)
         # request all music videos for this artist
-        r = requests.get('http://www.theaudiodb.com/api/v1/json/1/mvid-mb.php?i={0}'.format(mbid))
+        r = requests.get('http://www.theaudiodb.com/api/v1/json/{0}/mvid-mb.php?i={1}'.format(apikey,mbid))
  
         vids = json.loads(r.text)
  
