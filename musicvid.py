@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#
+#   This file is part of the music video downloader project at
+#   https://github.com/waddles/mvid_dl
 #
 #   Author: Wade Fitzpatrick    wade.fitzpatrick@gmail.com
 #
@@ -10,9 +10,9 @@ import requests
 
 class MusicVideo:
     """A class of music video objects to be downloaded"""
-
-    # FIXME Change this to a valid api key
-    apikey = 1
+    
+    # theaudiodb.com API key
+    apikey = '852891276b2d731671156f'
 
     def __init__(self, artist, title):
  
