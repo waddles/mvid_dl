@@ -1,9 +1,8 @@
 #!/usr/bin/env python
+# This file is part of the music video downloader project at
+# https://github.com/waddles/mvid_dl
 #
-#
-#   Author: Wade Fitzpatrick    wade.fitzpatrick@gmail.com
-#
-# Download ARIA top 50 singles music videos
+# Download music videos using artist and track titles from various sources
 #
 # Output music video url and "Artist - Song Title"
 #
@@ -17,6 +16,12 @@ import sys
 import time
 from lxml import html
 from musicvid import MusicVideo
+
+__version__ = '0.2.0'
+__author__ = 'Wade Fitzpatrick'
+__copyright__ = "Copyright (C) 2014 Wade Fitzpatrick"
+__license__ = "MIT"
+__email__ = 'wade.fitzpatrick@gmail.com'
 
 Config = ConfigParser.ConfigParser()
 Config.read('settings.ini')
