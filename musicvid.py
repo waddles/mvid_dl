@@ -8,7 +8,7 @@ import json
 import re
 import requests
 
-class MusicVideo:
+class MusicVideo(object):
     """A class of music video objects to be downloaded"""
     
     # theaudiodb.com API key
@@ -24,10 +24,25 @@ class MusicVideo:
         artist = re.sub(r'\|.*', r'', artist)
         self.artist = artist.rstrip().encode('utf8')
  
-        self.title = title.encode('utf8')
+        self.title = title.rstrip().encode('utf8')
+
+        self._hash = hash((self.artist.lower(), self.title.lower()))
 
     def __str__(self):
         return '{} - {}'.format(self.artist, self.title)
+
+    def __repr__(self):
+        return '{}(artist=\'{}\', title=\'{}\')'.format(
+            self.__class__.__name__, self.artist, self.title)
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self._hash == other._hash
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return self._hash
 
     def prepare_artist(self):
         """Search for artist in theaudiodb.com and get MusicBrainz ID"""
