@@ -10,6 +10,7 @@
 
 from __future__ import print_function
 import ConfigParser
+import argparse
 import pylast
 import requests
 import sys
@@ -19,9 +20,20 @@ from musicvid import MusicVideo
 
 __version__ = '0.2.0'
 __author__ = 'Wade Fitzpatrick'
-__copyright__ = "Copyright (C) 2014 Wade Fitzpatrick"
-__license__ = "MIT"
+__copyright__ = 'Copyright (C) 2014 Wade Fitzpatrick'
+__license__ = 'MIT'
 __email__ = 'wade.fitzpatrick@gmail.com'
+
+parser = argparse.ArgumentParser(description='fetch music videos for XBMC')
+group1 = parser.add_mutually_exclusive_group()
+group1.add_argument('-v', '--verbose', action='store_true')
+group1.add_argument('-q', '--quiet', action='store_true')
+group2 = parser.add_argument_group()
+group2.add_argument('-a', '--artist', help='artist name')
+group2.add_argument('-t', '--title', help='track title')
+args = parser.parse_args()
+if args.title and not args.artist:
+    parser.error('track title without artist name')
 
 Config = ConfigParser.ConfigParser()
 Config.read('settings.ini')
@@ -34,20 +46,30 @@ def ARIA_top_50():
         artists = tree.xpath('//div[@class="column col-6"]/p[1]/text()[1]')
 
         assert(len(songs) == len(artists))
-    return zip(artists, songs)
+        return [MusicVideo(artist, title) for artist,title in zip(artists, songs)]
 
 def LastFM_played_tracks():
-    last_tracks = []
-    if Config.getboolean('ARIA top 50 singles', 'enabled'):
+    if Config.getboolean('LastFM', 'enabled'):
+        try:
+            limit = Config.getint('LastFM', 'limit')
+            if limit <= 0:
+                limit = None
+        except ConfigParser.NoOptionError, e:
+            print('{}... using limit=None'.format(e), file=sys.stderr)
+            limit = None
         network = pylast.LastFMNetwork(api_key=Config.get('LastFM', 'API_KEY'),
                 api_secret=Config.get('LastFM', 'API_SECRET'))
-        recent_tracks = network.get_user(Config.get('LastFM', 'username')).get_recent_tracks(limit=None)
-        for played_track in recent_tracks:
-            last_tracks.append([played_track.track.artist.name, played_track.track.title])
-    return last_tracks
+        recent_tracks = network.get_user(Config.get('LastFM', 'username')).get_recent_tracks(limit=limit)
+        return [MusicVideo(t.track.artist.name, t.track.title) for t in recent_tracks]
 
-for (artist, title) in ARIA_top_50() + LastFM_played_tracks():
-    mvid = MusicVideo(artist, title)
+to_fetch = set()
+if args.title and args.artist:
+    to_fetch.update([MusicVideo(args.artist, args.title)])
+else:
+    to_fetch.update(ARIA_top_50())
+    to_fetch.update(LastFM_played_tracks())
+
+for mvid in to_fetch:
     try:
         mvid.prepare_artist()
         time.sleep(1)
